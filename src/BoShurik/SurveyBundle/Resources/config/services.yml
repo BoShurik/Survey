@@ -1,0 +1,7 @@
+parameters:
+#    bo_shurik_survey.example.class: BoShurik\SurveyBundle\Example
+
+services:
+#    bo_shurik_survey.example:
+#        class: %bo_shurik_survey.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
