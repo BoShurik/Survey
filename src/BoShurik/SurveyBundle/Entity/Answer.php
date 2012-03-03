@@ -26,16 +26,27 @@ class Answer
 
     /**
      * @var \BoShurik\UserBundle\Entity\User $user
+     *
+     * @ORM\ManyToOne(targetEntity="BoShurik\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="user", referencedColumnName="id", onDelete="cascade", onUpdate="cascade")
      */
     private $user;
 
     /**
      * @var Survey $survey
+     *
+     * @ORM\ManyToOne(targetEntity="Survey")
+     * @ORM\JoinColumn(name="survey", referencedColumnName="id", onDelete="cascade", onUpdate="cascade")
      */
     private $survey;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection $choices
+     *
+     * @ORM\ManyToMany(targetEntity="Choice")
+     * @ORM\JoinTable(name="answer_choice",
+     *      joinColumns={@ORM\JoinColumn(name="answer", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="choice", referencedColumnName="id")})
      */
     private $choices;
 

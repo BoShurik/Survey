@@ -32,9 +32,15 @@ class Survey
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection $questions
+     *
+     * @ORM\OneToMany(targetEntity="Question", mappedBy="survey")
      */
     private $questions;
 
+    public function __construct()
+    {
+        $this->questions = new ArrayCollection();
+    }
 
     /**
      * Get id

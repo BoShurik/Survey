@@ -30,6 +30,9 @@ class Choice
 
     /**
      * @var Question $question
+     *
+     * @ORM\ManyToOne(targetEntity="Question", inversedBy="choices")
+     * @ORM\JoinColumn(name="question", referencedColumnName="id", onDelete="cascade", onUpdate="cascade")
      */
     private $question;
 

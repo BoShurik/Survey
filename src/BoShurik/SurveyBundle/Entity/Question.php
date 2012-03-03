@@ -4,6 +4,8 @@ namespace BoShurik\SurveyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * BoShurik\SurveyBundle\Entity\Question
  *
@@ -44,13 +46,23 @@ class Question
 
     /**
      * @var Survey $survey
+     *
+     * @ORM\ManyToOne(targetEntity="Survey", inversedBy="questions")
+     * @ORM\JoinColumn(name="survey", referencedColumnName="id", onDelete="cascade", onUpdate="cascade")
      */
     private $survey;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection $choices
+     *
+     * @ORM\OneToMany(targetEntity="Choice", mappedBy="question")
      */
     private $choices;
+
+    public function __construct()
+    {
+        $this->choices = new ArrayCollection();
+    }
 
 
     /**
