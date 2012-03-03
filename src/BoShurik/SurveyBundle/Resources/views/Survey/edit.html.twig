@@ -1,7 +1,7 @@
-<h1>Survey edit</h1>
+<h1>Survey {% if delete_form %}edit{% else %}new{% endif %}</h1>
 
-<form action="{{ path('survey_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
-    {{ form_widget(edit_form) }}
+<form action="{{ path('survey_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(form) }}>
+    {{ form_widget(form) }}
     <p>
         <button type="submit">Edit</button>
     </p>
@@ -13,10 +13,12 @@
             Back to the list
         </a>
     </li>
+    {% if delete_form %}
     <li>
         <form action="{{ path('survey_delete', { 'id': entity.id }) }}" method="post">
             {{ form_widget(delete_form) }}
             <button type="submit">Delete</button>
         </form>
     </li>
+    {% endif %}
 </ul>

@@ -60,9 +60,10 @@ class SurveyController extends Controller
         $entity = new Survey();
         $form   = $this->createForm(new SurveyType(), $entity);
 
-        return $this->render('BoShurikSurveyBundle:Survey:new.html.twig', array(
+        return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView()
+            'form'   => $form->createView(),
+            'delete_form' => false
         ));
     }
 
@@ -86,9 +87,10 @@ class SurveyController extends Controller
             
         }
 
-        return $this->render('BoShurikSurveyBundle:Survey:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView()
+        return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
+            'entity'      => $entity,
+            'form'        => $form->createView(),
+            'delete_form' => false
         ));
     }
 
@@ -111,7 +113,7 @@ class SurveyController extends Controller
 
         return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
             'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'form'        => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -146,7 +148,7 @@ class SurveyController extends Controller
 
         return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
             'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'form'        => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
