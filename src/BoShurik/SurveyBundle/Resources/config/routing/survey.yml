@@ -1,0 +1,30 @@
+survey:
+    pattern:  /
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:index" }
+
+survey_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:show" }
+
+survey_new:
+    pattern:  /new
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:new" }
+
+survey_create:
+    pattern:  /create
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:create" }
+    requirements: { _method: post }
+
+survey_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:edit" }
+
+survey_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:update" }
+    requirements: { _method: post }
+
+survey_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:delete" }
+    requirements: { _method: post }
