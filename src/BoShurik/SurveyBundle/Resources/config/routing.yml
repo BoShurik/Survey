@@ -21,3 +21,7 @@ BoShurikSurveyBundle_site:
     resource: "@BoShurikSurveyBundle/Resources/config/routing/site.yml"
     prefix:   /
 
+BoShurikSurveyBundle_survey:
+    resource: "@BoShurikSurveyBundle/Resources/config/routing/survey.yml"
+    prefix:   /survey
+
