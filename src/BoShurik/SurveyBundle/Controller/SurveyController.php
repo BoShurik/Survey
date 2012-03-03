@@ -42,12 +42,10 @@ class SurveyController extends Controller
             throw $this->createNotFoundException('Unable to find Survey entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        // TODO: Вывод формы опроса aka публичная часть
 
         return $this->render('BoShurikSurveyBundle:Survey:show.html.twig', array(
-            'entity'      => $entity,
-            'delete_form' => $deleteForm->createView(),
-
+            'entity'      => $entity
         ));
     }
 
@@ -80,6 +78,7 @@ class SurveyController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
+            // TODO: Добавление вопросов/вариантов ответа
             $em->persist($entity);
             $em->flush();
 
@@ -140,6 +139,7 @@ class SurveyController extends Controller
         $editForm->bindRequest($request);
 
         if ($editForm->isValid()) {
+            // TODO: Добавление вопросов/вариантов ответа + редактирование того, что было уже
             $em->persist($entity);
             $em->flush();
 
