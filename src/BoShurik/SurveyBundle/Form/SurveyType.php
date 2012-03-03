@@ -16,6 +16,6 @@ class SurveyType extends AbstractType
 
     public function getName()
     {
-        return 'boshurik_surveybundle_surveytype';
+        return 'survey';
     }
 }

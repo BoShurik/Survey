@@ -17,6 +17,6 @@ class ChoiceType extends AbstractType
 
     public function getName()
     {
-        return 'boshurik_surveybundle_choicetype';
+        return 'choice';
     }
 }
