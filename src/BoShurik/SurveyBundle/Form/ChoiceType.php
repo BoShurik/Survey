@@ -11,12 +11,18 @@ class ChoiceType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('question')
         ;
+    }
+
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'BoShurik\SurveyBundle\Entity\Choice',
+        );
     }
 
     public function getName()
     {
-        return 'choice';
+        return 'choice_type';
     }
 }

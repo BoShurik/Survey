@@ -1,12 +1,61 @@
 {% extends 'BoShurikSurveyBundle::base.html.twig' %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var questionsCount = $('#survey_questions > div').length;
+
+            $('#add_question').click(function(event){
+                var prototype = $('#survey_type_questions').data('prototype');
+                var index = ++questionsCount;
+
+                prototype = prototype.replace(/choices_\$\$name\$\$/g, 'choices_$$$$choice_name$$$$');
+                prototype = prototype.replace(/\[choices\]\[\$\$name\$\$\]/g, '[choices][$$$$choice_name$$$$]');
+
+                prototype = prototype.replace(/\$\$name\$\$/g, index);
+                prototype = $(prototype).find('label:first').before('<button class="add_choice" data-question-id="'+ index +'" type="button">Add choice</button>').before('<button class="remove_question" type="button">Remove question</button>').parent();
+
+                $('#survey_type_questions').append(prototype);
+            });
+
+            $('#survey_type_questions').delegate('button.remove_question', 'click', function(){
+                if (confirm('Are you sure?'))
+                {
+                    $(this).parent().remove();
+                }
+            });
+
+            $('#survey_type_questions').delegate('button.add_choice', 'click', function(){
+                var choicesDiv = $('#survey_type_questions_'+ $(this).data('question-id') +'_choices');
+                var prototype = choicesDiv.data('prototype');
+                var index = $('#survey_type_questions_'+ $(this).data('question-id') +'_choices > div').length + 1;
+
+                prototype = prototype.replace(/\$\$choice_name\$\$/g, index);
+
+                prototype = $(prototype).find('label:first').html(index).before('<button class="remove_choice" type="button">Remove choice</button>').parent();
+
+                choicesDiv.append(prototype);
+            });
+
+            $('#survey_type_questions').delegate('button.remove_choice', 'click', function(){
+                if (confirm('Are you sure?'))
+                {
+                    $(this).parent().remove();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
 <h1>Survey {% if delete_form %}edit{% else %}new{% endif %}</h1>
 
 <form action="{% if delete_form %}{{ path('survey_update', { 'id': entity.id }) }}{% else %}{{ path('survey_create') }}{% endif %}" method="post" {{ form_enctype(form) }}>
     {{ form_widget(form) }}
     <p>
-        <button type="submit">Save</button>
+        <button type="submit">Save survey</button>
+        <button id="add_question" type="button">Add question</button>
     </p>
 </form>
 
