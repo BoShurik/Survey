@@ -1,9 +1,12 @@
+{% extends 'BoShurikSurveyBundle::base.html.twig' %}
+
+{% block content %}
 <h1>Survey {% if delete_form %}edit{% else %}new{% endif %}</h1>
 
-<form action="{{ path('survey_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(form) }}>
+<form action="{% if delete_form %}{{ path('survey_update', { 'id': entity.id }) }}{% else %}{{ path('survey_create') }}{% endif %}" method="post" {{ form_enctype(form) }}>
     {{ form_widget(form) }}
     <p>
-        <button type="submit">Edit</button>
+        <button type="submit">Save</button>
     </p>
 </form>
 
@@ -22,3 +25,4 @@
     </li>
     {% endif %}
 </ul>
+{% endblock %}
