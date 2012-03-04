@@ -11,6 +11,10 @@ survey_answer:
     defaults: { _controller: "BoShurikSurveyBundle:Survey:answer" }
     requirements: { _method: post }
 
+survey_result:
+    pattern:  /{id}/result
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:result" }
+
 survey_new:
     pattern:  /new
     defaults: { _controller: "BoShurikSurveyBundle:Survey:new" }

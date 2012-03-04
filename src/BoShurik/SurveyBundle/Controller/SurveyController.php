@@ -99,12 +99,30 @@ class SurveyController extends Controller
         $request = $this->getRequest();
         $form->bindRequest($request);
         if ($form->isValid()) {
+            // TODO: Сохранение результатов
             return $this->redirect($this->generateUrl('survey_show', array('id' => $entity->getId())));
         }
 
         return $this->render('BoShurikSurveyBundle:Survey:show.html.twig', array(
             'entity'      => $entity,
             'form'        => $form->createView()
+        ));
+    }
+
+    public function resultAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Survey entity.');
+        }
+
+        //TODO: Вывод результатов
+
+        return $this->render('BoShurikSurveyBundle:Survey:result.html.twig', array(
+            'entity'      => $entity,
         ));
     }
 
