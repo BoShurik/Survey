@@ -36,6 +36,7 @@ class SurveyController extends Controller
     {
         $em = $this->getDoctrine()->getEntityManager();
 
+        //TODO: Оптимизировать этот запросик, чтоб все сразу вытаскивалось
         $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
 
         if (!$entity) {
