@@ -13,8 +13,12 @@ class QuestionType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('expanded')
-            ->add('multiple')
+            ->add('expanded', null, array(
+                'required' => false
+            ))
+            ->add('multiple', null, array(
+                'required' => false
+            ))
             ->add('choices', 'collection', array(
                 'type'         => new ChoiceType(),
                 'allow_add'    => true,

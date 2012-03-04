@@ -78,7 +78,14 @@ class SurveyController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getEntityManager();
-            // TODO: Добавление вопросов/вариантов ответа
+            foreach ($entity->getQuestions() as $question)
+            {
+                $question->setSurvey($entity);
+                foreach ($question->getChoices() as $choice)
+                {
+                    $choice->setQuestion($question);
+                }
+            }
             $em->persist($entity);
             $em->flush();
 
@@ -131,6 +138,17 @@ class SurveyController extends Controller
             throw $this->createNotFoundException('Unable to find Survey entity.');
         }
 
+        $oldQuestions = array();
+        $oldChoices = array();
+        foreach ($entity->getQuestions() as $question)
+        {
+            $oldQuestions[$question->getId()] = $question;
+            foreach ($question->getChoices() as $choice)
+            {
+                $oldChoices[$choice->getId()] = $choice;
+            }
+        }
+
         $editForm   = $this->createForm(new SurveyType(), $entity);
         $deleteForm = $this->createDeleteForm($id);
 
@@ -139,7 +157,40 @@ class SurveyController extends Controller
         $editForm->bindRequest($request);
 
         if ($editForm->isValid()) {
-            // TODO: Добавление вопросов/вариантов ответа + редактирование того, что было уже
+            foreach ($entity->getQuestions() as $question)
+            {
+                if (!$question->getId())
+                {
+                    $question->setSurvey($entity);
+                }
+                else
+                {
+                    unset($oldQuestions[$question->getId()]);
+                }
+
+                foreach ($question->getChoices() as $choice)
+                {
+                    if (!$question->getId())
+                    {
+                        $choice->setQuestion($question);
+                    }
+                    else
+                    {
+                        unset($oldChoices[$choice->getId()]);
+                    }
+                }
+            }
+
+            foreach ($oldQuestions as $question)
+            {
+                $em->remove($question);
+            }
+
+            foreach ($oldChoices as $choice)
+            {
+                $em->remove($choice);
+            }
+
             $em->persist($entity);
             $em->flush();
 

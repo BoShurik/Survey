@@ -33,7 +33,7 @@ class Survey
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection $questions
      *
-     * @ORM\OneToMany(targetEntity="Question", mappedBy="survey")
+     * @ORM\OneToMany(targetEntity="Question", mappedBy="survey", cascade={"all"})
      */
     private $questions;
 

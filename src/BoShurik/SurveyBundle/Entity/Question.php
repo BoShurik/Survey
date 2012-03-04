@@ -55,12 +55,15 @@ class Question
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection $choices
      *
-     * @ORM\OneToMany(targetEntity="Choice", mappedBy="question")
+     * @ORM\OneToMany(targetEntity="Choice", mappedBy="question", cascade={"all"})
      */
     private $choices;
 
     public function __construct()
     {
+        $this->expanded = false;
+        $this->multiple = false;
+
         $this->choices = new ArrayCollection();
     }
 
