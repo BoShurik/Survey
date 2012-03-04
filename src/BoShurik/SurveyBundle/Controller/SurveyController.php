@@ -42,10 +42,69 @@ class SurveyController extends Controller
             throw $this->createNotFoundException('Unable to find Survey entity.');
         }
 
-        // TODO: Вывод формы опроса aka публичная часть
+        $builder = $this->createFormBuilder();
+
+        foreach ($entity->getQuestions() as $question)
+        {
+            $choices = array();
+            foreach ($question->getChoices() as $choice)
+            {
+                $choices[$choice->getId()] = $choice->getName();
+            }
+            $builder->add('question_'. $question->getId(), 'choice', array(
+                'label' => $question->getName(),
+                'expanded' => $question->getExpanded(),
+                'multiple' => $question->getMultiple(),
+                'choices' => $choices
+            ));
+        }
+
+        $form = $builder->getForm();
 
         return $this->render('BoShurikSurveyBundle:Survey:show.html.twig', array(
-            'entity'      => $entity
+            'entity'      => $entity,
+            'form'        => $form->createView()
+        ));
+    }
+
+    public function answerAction($id)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Survey entity.');
+        }
+
+        $builder = $this->createFormBuilder();
+
+        foreach ($entity->getQuestions() as $question)
+        {
+            $choices = array();
+            foreach ($question->getChoices() as $choice)
+            {
+                $choices[$choice->getId()] = $choice->getName();
+            }
+            $builder->add('question_'. $question->getId(), 'choice', array(
+                'label' => $question->getName(),
+                'expanded' => $question->getExpanded(),
+                'multiple' => $question->getMultiple(),
+                'choices' => $choices
+            ));
+        }
+
+        $form = $builder->getForm();
+
+        $request = $this->getRequest();
+        $form->bindRequest($request);
+        if ($form->isValid()) {
+            return $this->redirect($this->generateUrl('survey_show', array('id' => $entity->getId())));
+        }
+
+        return $this->render('BoShurikSurveyBundle:Survey:show.html.twig', array(
+            'entity'      => $entity,
+            'form'        => $form->createView()
         ));
     }
 
@@ -90,7 +149,6 @@ class SurveyController extends Controller
             $em->flush();
 
             return $this->redirect($this->generateUrl('survey_show', array('id' => $entity->getId())));
-            
         }
 
         return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(

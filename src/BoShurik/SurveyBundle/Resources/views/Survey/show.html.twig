@@ -16,6 +16,13 @@
     </tbody>
 </table>
 
+<form action="{{ path('survey_answer', { 'id': entity.id }) }}" method="post" {{ form_enctype(form) }}>
+    {{ form_widget(form) }}
+    <p>
+        <button type="submit">Done</button>
+    </p>
+</form>
+
 <ul class="record_actions">
     <li>
         <a href="{{ path('survey') }}">

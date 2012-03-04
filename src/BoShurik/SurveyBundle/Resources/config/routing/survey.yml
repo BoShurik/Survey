@@ -6,6 +6,11 @@ survey_show:
     pattern:  /{id}/show
     defaults: { _controller: "BoShurikSurveyBundle:Survey:show" }
 
+survey_answer:
+    pattern:  /{id}/answer
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:answer" }
+    requirements: { _method: post }
+
 survey_new:
     pattern:  /new
     defaults: { _controller: "BoShurikSurveyBundle:Survey:new" }
