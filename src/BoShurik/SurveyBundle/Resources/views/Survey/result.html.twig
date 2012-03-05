@@ -16,6 +16,14 @@
     </tbody>
 </table>
 
+<h1>Total answers: {{ answers | length }}</h1>
+{% for answer in answers %}
+    <h2>{{ answer.user.username }}</h2>
+    {% for choice in answer.choices %}
+        {{ choice.question.name }} = {{ choice.name }}<br />
+    {% endfor %}
+{% endfor %}
+
 <ul class="record_actions">
     <li>
         <a href="{{ path('survey') }}">

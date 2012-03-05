@@ -173,9 +173,13 @@ class SurveyController extends Controller
         }
 
         //TODO: Вывод результатов
+        $answers = $em->getRepository('BoShurikSurveyBundle:Answer')->findBy(array(
+            'survey' => $entity->getId()
+        ));
 
         return $this->render('BoShurikSurveyBundle:Survey:result.html.twig', array(
             'entity'      => $entity,
+            'answers'     => $answers
         ));
     }
 
