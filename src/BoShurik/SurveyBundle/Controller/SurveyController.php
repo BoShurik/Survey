@@ -7,6 +7,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use BoShurik\SurveyBundle\Entity\Survey;
 use BoShurik\SurveyBundle\Form\SurveyType;
 
+use BoShurik\SurveyBundle\Entity\Answer;
+use BoShurik\UserBundle\Entity\User;
+
 /**
  * Survey controller.
  *
@@ -70,6 +73,12 @@ class SurveyController extends Controller
 
     public function answerAction($id)
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        if (!$user instanceof User)
+        {
+            throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
+        }
+
         $em = $this->getDoctrine()->getEntityManager();
 
         $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
@@ -80,12 +89,14 @@ class SurveyController extends Controller
 
         $builder = $this->createFormBuilder();
 
+        $choiceEntities = array();
         foreach ($entity->getQuestions() as $question)
         {
             $choices = array();
             foreach ($question->getChoices() as $choice)
             {
                 $choices[$choice->getId()] = $choice->getName();
+                $choiceEntities[$choice->getId()] = $choice;
             }
             $builder->add('question_'. $question->getId(), 'choice', array(
                 'label' => $question->getName(),
@@ -100,7 +111,48 @@ class SurveyController extends Controller
         $request = $this->getRequest();
         $form->bindRequest($request);
         if ($form->isValid()) {
-            // TODO: Сохранение результатов
+            $answer = new Answer($user, $entity);
+
+            $data = $form->getData();
+            foreach ($entity->getQuestions() as $question)
+            {
+                if (isset($data['question_'. $question->getId()]))
+                {
+                    if (is_array($data['question_'. $question->getId()]) && $question->getMultiple())
+                    {
+                        foreach ($data['question_'. $question->getId()] as $value)
+                        {
+                            if (isset($choiceEntities[$value]))
+                            {
+                                $answer->addChoice($choiceEntities[$value]);
+                            }
+                            else
+                            {
+                                throw new \Exception('Wrong data!');
+                            }
+                        }
+                    }
+                    else if (!is_array($data['question_'. $question->getId()]) && !$question->getMultiple())
+                    {
+                        if (isset($choiceEntities[$data['question_'. $question->getId()]]))
+                        {
+                            $answer->addChoice($choiceEntities[$data['question_'. $question->getId()]]);
+                        }
+                        else
+                        {
+                            throw new \Exception('Wrong data!');
+                        }
+                    }
+                    else
+                    {
+                        throw new \Exception('Wrong data!');
+                    }
+                }
+            }
+
+            $em->persist($answer);
+            $em->flush();
+
             return $this->redirect($this->generateUrl('survey_show', array('id' => $entity->getId())));
         }
 
