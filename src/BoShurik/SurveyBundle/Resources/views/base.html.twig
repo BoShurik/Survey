@@ -47,10 +47,10 @@
 
 <div class="container-fluid">
     {% block flashes %}
-        {% if app.session.getFlashes() | length > 0 %}
+        {% if app.session.flashbag.all | length > 0 %}
             <div class="row-fluid">
                 <div class="span12" id="flash">
-                    {% for key, message in app.session.getFlashes() %}
+                    {% for type, flashMessages in app.session.flashbag.all() %}
                     <div class="{{ key }}">
                         {{ message|trans({}, 'FOSUserBundle') }}
                     </div>
