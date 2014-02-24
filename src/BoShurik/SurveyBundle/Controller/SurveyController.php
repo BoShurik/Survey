@@ -9,6 +9,7 @@ use BoShurik\SurveyBundle\Form\SurveyType;
 
 use BoShurik\SurveyBundle\Entity\Answer;
 use BoShurik\UserBundle\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Survey controller.
@@ -22,7 +23,7 @@ class SurveyController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $entities = $em->getRepository('BoShurikSurveyBundle:Survey')->findAll();
 
@@ -37,7 +38,7 @@ class SurveyController extends Controller
      */
     public function showAction($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         //TODO: Оптимизировать этот запросик, чтоб все сразу вытаскивалось
         $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
@@ -48,14 +49,12 @@ class SurveyController extends Controller
 
         $builder = $this->createFormBuilder();
 
-        foreach ($entity->getQuestions() as $question)
-        {
+        foreach ($entity->getQuestions() as $question) {
             $choices = array();
-            foreach ($question->getChoices() as $choice)
-            {
+            foreach ($question->getChoices() as $choice) {
                 $choices[$choice->getId()] = $choice->getName();
             }
-            $builder->add('question_'. $question->getId(), 'choice', array(
+            $builder->add('question_' . $question->getId(), 'choice', array(
                 'label' => $question->getName(),
                 'expanded' => $question->getExpanded(),
                 'multiple' => $question->getMultiple(),
@@ -66,20 +65,19 @@ class SurveyController extends Controller
         $form = $builder->getForm();
 
         return $this->render('BoShurikSurveyBundle:Survey:show.html.twig', array(
-            'entity'      => $entity,
-            'form'        => $form->createView()
+            'entity' => $entity,
+            'form' => $form->createView()
         ));
     }
 
-    public function answerAction($id)
+    public function answerAction(Request $request, $id)
     {
         $user = $this->get('security.context')->getToken()->getUser();
-        if (!$user instanceof User)
-        {
+        if (!$user instanceof User) {
             throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
         }
 
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
 
@@ -90,15 +88,13 @@ class SurveyController extends Controller
         $builder = $this->createFormBuilder();
 
         $choiceEntities = array();
-        foreach ($entity->getQuestions() as $question)
-        {
+        foreach ($entity->getQuestions() as $question) {
             $choices = array();
-            foreach ($question->getChoices() as $choice)
-            {
+            foreach ($question->getChoices() as $choice) {
                 $choices[$choice->getId()] = $choice->getName();
                 $choiceEntities[$choice->getId()] = $choice;
             }
-            $builder->add('question_'. $question->getId(), 'choice', array(
+            $builder->add('question_' . $question->getId(), 'choice', array(
                 'label' => $question->getName(),
                 'expanded' => $question->getExpanded(),
                 'multiple' => $question->getMultiple(),
@@ -107,44 +103,28 @@ class SurveyController extends Controller
         }
 
         $form = $builder->getForm();
-
-        $request = $this->getRequest();
-        $form->bindRequest($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $answer = new Answer($user, $entity);
 
             $data = $form->getData();
-            foreach ($entity->getQuestions() as $question)
-            {
-                if (isset($data['question_'. $question->getId()]))
-                {
-                    if (is_array($data['question_'. $question->getId()]) && $question->getMultiple())
-                    {
-                        foreach ($data['question_'. $question->getId()] as $value)
-                        {
-                            if (isset($choiceEntities[$value]))
-                            {
+            foreach ($entity->getQuestions() as $question) {
+                if (isset($data['question_' . $question->getId()])) {
+                    if (is_array($data['question_' . $question->getId()]) && $question->getMultiple()) {
+                        foreach ($data['question_' . $question->getId()] as $value) {
+                            if (isset($choiceEntities[$value])) {
                                 $answer->addChoice($choiceEntities[$value]);
-                            }
-                            else
-                            {
+                            } else {
                                 throw new \Exception('Wrong data!');
                             }
                         }
-                    }
-                    else if (!is_array($data['question_'. $question->getId()]) && !$question->getMultiple())
-                    {
-                        if (isset($choiceEntities[$data['question_'. $question->getId()]]))
-                        {
-                            $answer->addChoice($choiceEntities[$data['question_'. $question->getId()]]);
-                        }
-                        else
-                        {
+                    } else if (!is_array($data['question_' . $question->getId()]) && !$question->getMultiple()) {
+                        if (isset($choiceEntities[$data['question_' . $question->getId()]])) {
+                            $answer->addChoice($choiceEntities[$data['question_' . $question->getId()]]);
+                        } else {
                             throw new \Exception('Wrong data!');
                         }
-                    }
-                    else
-                    {
+                    } else {
                         throw new \Exception('Wrong data!');
                     }
                 }
@@ -157,14 +137,14 @@ class SurveyController extends Controller
         }
 
         return $this->render('BoShurikSurveyBundle:Survey:show.html.twig', array(
-            'entity'      => $entity,
-            'form'        => $form->createView()
+            'entity' => $entity,
+            'form' => $form->createView()
         ));
     }
 
     public function resultAction($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
 
@@ -178,8 +158,8 @@ class SurveyController extends Controller
         ));
 
         return $this->render('BoShurikSurveyBundle:Survey:result.html.twig', array(
-            'entity'      => $entity,
-            'answers'     => $answers
+            'entity' => $entity,
+            'answers' => $answers
         ));
     }
 
@@ -190,11 +170,11 @@ class SurveyController extends Controller
     public function newAction()
     {
         $entity = new Survey();
-        $form   = $this->createForm(new SurveyType(), $entity);
+        $form = $this->createForm(new SurveyType(), $entity);
 
         return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
             'delete_form' => false
         ));
     }
@@ -203,20 +183,17 @@ class SurveyController extends Controller
      * Creates a new Survey entity.
      *
      */
-    public function createAction()
+    public function createAction(Request $request)
     {
-        $entity  = new Survey();
-        $request = $this->getRequest();
-        $form    = $this->createForm(new SurveyType(), $entity);
-        $form->bindRequest($request);
+        $entity = new Survey();
+        $form = $this->createForm(new SurveyType(), $entity);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
-            foreach ($entity->getQuestions() as $question)
-            {
+            $em = $this->getDoctrine()->getManager();
+            foreach ($entity->getQuestions() as $question) {
                 $question->setSurvey($entity);
-                foreach ($question->getChoices() as $choice)
-                {
+                foreach ($question->getChoices() as $choice) {
                     $choice->setQuestion($question);
                 }
             }
@@ -227,8 +204,8 @@ class SurveyController extends Controller
         }
 
         return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
-            'entity'      => $entity,
-            'form'        => $form->createView(),
+            'entity' => $entity,
+            'form' => $form->createView(),
             'delete_form' => false
         ));
     }
@@ -239,7 +216,7 @@ class SurveyController extends Controller
      */
     public function editAction($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
 
@@ -251,8 +228,8 @@ class SurveyController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
-            'entity'      => $entity,
-            'form'        => $editForm->createView(),
+            'entity' => $entity,
+            'form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -261,9 +238,9 @@ class SurveyController extends Controller
      * Edits an existing Survey entity.
      *
      */
-    public function updateAction($id)
+    public function updateAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
 
@@ -273,54 +250,40 @@ class SurveyController extends Controller
 
         $oldQuestions = array();
         $oldChoices = array();
-        foreach ($entity->getQuestions() as $question)
-        {
+        foreach ($entity->getQuestions() as $question) {
             $oldQuestions[$question->getId()] = $question;
-            foreach ($question->getChoices() as $choice)
-            {
+            foreach ($question->getChoices() as $choice) {
                 $oldChoices[$choice->getId()] = $choice;
             }
         }
 
-        $editForm   = $this->createForm(new SurveyType(), $entity);
+        $editForm = $this->createForm(new SurveyType(), $entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        $request = $this->getRequest();
-
-        $editForm->bindRequest($request);
+        $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            foreach ($entity->getQuestions() as $question)
-            {
-                if (!$question->getId())
-                {
+            foreach ($entity->getQuestions() as $question) {
+                if (!$question->getId()) {
                     $question->setSurvey($entity);
-                }
-                else
-                {
+                } else {
                     unset($oldQuestions[$question->getId()]);
                 }
 
-                foreach ($question->getChoices() as $choice)
-                {
-                    if (!$question->getId())
-                    {
+                foreach ($question->getChoices() as $choice) {
+                    if (!$question->getId()) {
                         $choice->setQuestion($question);
-                    }
-                    else
-                    {
+                    } else {
                         unset($oldChoices[$choice->getId()]);
                     }
                 }
             }
 
-            foreach ($oldQuestions as $question)
-            {
+            foreach ($oldQuestions as $question) {
                 $em->remove($question);
             }
 
-            foreach ($oldChoices as $choice)
-            {
+            foreach ($oldChoices as $choice) {
                 $em->remove($choice);
             }
 
@@ -331,8 +294,8 @@ class SurveyController extends Controller
         }
 
         return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
-            'entity'      => $entity,
-            'form'        => $editForm->createView(),
+            'entity' => $entity,
+            'form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -341,15 +304,14 @@ class SurveyController extends Controller
      * Deletes a Survey entity.
      *
      */
-    public function deleteAction($id)
+    public function deleteAction(Request $request, $id)
     {
         $form = $this->createDeleteForm($id);
-        $request = $this->getRequest();
 
-        $form->bindRequest($request);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
+            $em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
 
             if (!$entity) {
@@ -367,7 +329,6 @@ class SurveyController extends Controller
     {
         return $this->createFormBuilder(array('id' => $id))
             ->add('id', 'hidden')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }
