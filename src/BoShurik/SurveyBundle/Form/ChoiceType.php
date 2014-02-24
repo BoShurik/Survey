@@ -24,6 +24,6 @@ class ChoiceType extends AbstractType
 
     public function getName()
     {
-        return 'choice';
+        return 'choice_type';
     }
 }
