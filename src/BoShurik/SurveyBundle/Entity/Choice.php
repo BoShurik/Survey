@@ -24,7 +24,7 @@ class Choice
     /**
      * @var string $name
      *
-     * @ORM\Column(name="name", type="string", length="255")
+     * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
@@ -32,7 +32,7 @@ class Choice
      * @var Question $question
      *
      * @ORM\ManyToOne(targetEntity="Question", inversedBy="choices")
-     * @ORM\JoinColumn(name="question", referencedColumnName="id", onDelete="cascade", onUpdate="cascade")
+     * @ORM\JoinColumn(name="question", referencedColumnName="id", onDelete="cascade")
      */
     private $question;
 

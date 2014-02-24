@@ -26,7 +26,7 @@ class Question
     /**
      * @var string $name
      *
-     * @ORM\Column(name="name", type="string", length="255")
+     * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
@@ -48,7 +48,7 @@ class Question
      * @var Survey $survey
      *
      * @ORM\ManyToOne(targetEntity="Survey", inversedBy="questions")
-     * @ORM\JoinColumn(name="survey", referencedColumnName="id", onDelete="cascade", onUpdate="cascade")
+     * @ORM\JoinColumn(name="survey", referencedColumnName="id", onDelete="cascade")
      */
     private $survey;
 

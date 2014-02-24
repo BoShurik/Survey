@@ -28,7 +28,7 @@ class Answer
      * @var \BoShurik\UserBundle\Entity\User $user
      *
      * @ORM\ManyToOne(targetEntity="BoShurik\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="user", referencedColumnName="id", onDelete="cascade", onUpdate="cascade")
+     * @ORM\JoinColumn(name="user", referencedColumnName="id", onDelete="cascade")
      */
     private $user;
 
@@ -36,7 +36,7 @@ class Answer
      * @var Survey $survey
      *
      * @ORM\ManyToOne(targetEntity="Survey")
-     * @ORM\JoinColumn(name="survey", referencedColumnName="id", onDelete="cascade", onUpdate="cascade")
+     * @ORM\JoinColumn(name="survey", referencedColumnName="id", onDelete="cascade")
      */
     private $survey;
 
