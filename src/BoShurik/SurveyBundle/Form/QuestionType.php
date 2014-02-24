@@ -3,13 +3,12 @@
 namespace BoShurik\SurveyBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
-
-use BoShurik\SurveyBundle\Form\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class QuestionType extends AbstractType
 {
-    public function buildForm(FormBuilder $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name')
@@ -27,15 +26,15 @@ class QuestionType extends AbstractType
         ;
     }
 
-    public function getDefaultOptions(array $options)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        return array(
+        $resolver->setDefaults(array(
             'data_class' => 'BoShurik\SurveyBundle\Entity\Question',
-        );
+        ));
     }
 
     public function getName()
     {
-        return 'question_type';
+        return 'question';
     }
 }
