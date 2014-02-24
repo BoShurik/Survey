@@ -167,36 +167,16 @@ class SurveyController extends Controller
      * Displays a form to create a new Survey entity.
      *
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
         $entity = new Survey();
-        $form = $this->createForm(new SurveyType(), $entity);
-
-        return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
-            'entity' => $entity,
-            'form' => $form->createView(),
-            'delete_form' => false
+        $form = $this->createForm(new SurveyType(), $entity, array(
+            'action' => $this->generateUrl('survey_create')
         ));
-    }
-
-    /**
-     * Creates a new Survey entity.
-     *
-     */
-    public function createAction(Request $request)
-    {
-        $entity = new Survey();
-        $form = $this->createForm(new SurveyType(), $entity);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            foreach ($entity->getQuestions() as $question) {
-                $question->setSurvey($entity);
-                foreach ($question->getChoices() as $choice) {
-                    $choice->setQuestion($question);
-                }
-            }
             $em->persist($entity);
             $em->flush();
 
@@ -214,7 +194,7 @@ class SurveyController extends Controller
      * Displays a form to edit an existing Survey entity.
      *
      */
-    public function editAction($id)
+    public function editAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -224,69 +204,13 @@ class SurveyController extends Controller
             throw $this->createNotFoundException('Unable to find Survey entity.');
         }
 
-        $editForm = $this->createForm(new SurveyType(), $entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return $this->render('BoShurikSurveyBundle:Survey:edit.html.twig', array(
-            'entity' => $entity,
-            'form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+        $editForm = $this->createForm(new SurveyType(), $entity, array(
+            'action' => $this->generateUrl('survey_update', array('id' => $id))
         ));
-    }
-
-    /**
-     * Edits an existing Survey entity.
-     *
-     */
-    public function updateAction(Request $request, $id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('BoShurikSurveyBundle:Survey')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Survey entity.');
-        }
-
-        $oldQuestions = array();
-        $oldChoices = array();
-        foreach ($entity->getQuestions() as $question) {
-            $oldQuestions[$question->getId()] = $question;
-            foreach ($question->getChoices() as $choice) {
-                $oldChoices[$choice->getId()] = $choice;
-            }
-        }
-
-        $editForm = $this->createForm(new SurveyType(), $entity);
         $deleteForm = $this->createDeleteForm($id);
-
         $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            foreach ($entity->getQuestions() as $question) {
-                if (!$question->getId()) {
-                    $question->setSurvey($entity);
-                } else {
-                    unset($oldQuestions[$question->getId()]);
-                }
-
-                foreach ($question->getChoices() as $choice) {
-                    if (!$question->getId()) {
-                        $choice->setQuestion($question);
-                    } else {
-                        unset($oldChoices[$choice->getId()]);
-                    }
-                }
-            }
-
-            foreach ($oldQuestions as $question) {
-                $em->remove($question);
-            }
-
-            foreach ($oldChoices as $choice) {
-                $em->remove($choice);
-            }
-
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             $em->persist($entity);
             $em->flush();
 
@@ -327,8 +251,12 @@ class SurveyController extends Controller
 
     private function createDeleteForm($id)
     {
-        return $this->createFormBuilder(array('id' => $id))
+        return $this->createFormBuilder(array('id' => $id), array(
+                'action' => $this->generateUrl('survey_delete', array('id' => $id)),
+                'method' => 'POST',
+            ))
             ->add('id', 'hidden')
+            ->add('delete', 'submit')
             ->getForm();
     }
 }

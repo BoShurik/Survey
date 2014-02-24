@@ -28,6 +28,8 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    form:
+        resources: [ 'BoShurikSurveyBundle::fields.html.twig' ]
 
 # Assetic Configuration
 assetic:

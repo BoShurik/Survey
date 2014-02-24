@@ -1,0 +1,54 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{% block collection_widget %}
+    {% if prototype is defined %}
+        {% set attr = attr|merge({'data-prototype': block('collection_item_row') }) %}
+    {% endif %}
+    {% if compound %}
+        <div {{ block('widget_container_attributes') }}>
+            {% if form.parent is empty and errors|length > 0 %}
+                <div>
+                    {{ form_errors(form) }}
+                </div>
+            {% endif %}
+            {% for child in form %}
+                <div class="removable" style="border-style: solid;">
+                    <div>
+                        {{ form_errors(child) }}
+                        {{ form_widget(child) }}
+                    </div>
+                    <div style="vertical-align: top;text-align: center">
+                        <a href="" class="remove_button button red small">
+                            Remove
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+            {{ form_rest(form) }}
+            <div>
+                <a href="" class="add_button button blue left" data-collection="{{ id }}">
+                    Add
+                </a>
+            </div>
+        </div>
+    {% else %}
+        {{ block('form_widget_simple') }}
+    {% endif %}
+{% endblock %}
+
+{% block collection_item_row %}
+    <div class="removable" style="border-style: solid;">
+        <div>
+            {{ form_errors(prototype) }}
+            {{ form_widget(prototype) }}
+        </div>
+        <div style="vertical-align: top;text-align: center">
+            <a href="" class="remove_button button red small">
+                Remove
+            </a>
+        </div>
+    </div>
+    {% for child in prototype %}
+        {{ form_row(prototype) }}
+    {% endfor %}
+{% endblock %}

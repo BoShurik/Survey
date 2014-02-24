@@ -21,7 +21,8 @@ class QuestionType extends AbstractType
             ->add('choices', 'collection', array(
                 'type'         => new ChoiceType(),
                 'allow_add'    => true,
-                'allow_delete' => true
+                'allow_delete' => true,
+                'by_reference' => false
             ))
         ;
     }

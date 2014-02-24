@@ -55,7 +55,7 @@ class Question
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection $choices
      *
-     * @ORM\OneToMany(targetEntity="Choice", mappedBy="question", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Choice", mappedBy="question", cascade={"all"}, orphanRemoval=true)
      */
     private $choices;
 
@@ -162,5 +162,10 @@ class Question
     {
         $choice->setQuestion($this);
         $this->choices->add($choice);
+    }
+
+    public function removeChoice(Choice $choice)
+    {
+        $this->choices->removeElement($choice);
     }
 }

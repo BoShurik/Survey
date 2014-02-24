@@ -1,14 +1,14 @@
 {% extends '::base.html.twig' %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="/bundles/boshuriksurvey/css/bootstrap.min.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/bundles/boshuriksurvey/css/main.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="{{ asset('bundles/boshuriksurvey/css/bootstrap.min.css') }}" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="{{ asset('bundles/boshuriksurvey/css/main.css') }}" type="text/css" media="screen, projection">
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript" src="/bundles/boshuriksurvey/js/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="/bundles/boshuriksurvey/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/bundles/boshuriksurvey/js/functions.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/boshuriksurvey/js/jquery-1.7.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/boshuriksurvey/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/boshuriksurvey/js/functions.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -71,7 +71,7 @@
 
             </div>
         </div>
-        <div class="span10">
+        <div id="content" class="span10">
             {% block content %}
                 <div class="hero-unit">
                     <h1>Hello, world!</h1>

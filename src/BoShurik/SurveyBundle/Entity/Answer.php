@@ -45,8 +45,8 @@ class Answer
      *
      * @ORM\ManyToMany(targetEntity="Choice")
      * @ORM\JoinTable(name="answer_choice",
-     *      joinColumns={@ORM\JoinColumn(name="answer", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="choice", referencedColumnName="id")})
+     *      joinColumns={@ORM\JoinColumn(name="answer", referencedColumnName="id", onDelete="cascade")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="choice", referencedColumnName="id", onDelete="cascade")})
      */
     private $choices;
 

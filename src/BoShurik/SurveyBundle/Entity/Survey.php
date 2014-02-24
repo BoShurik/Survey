@@ -33,7 +33,7 @@ class Survey
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection $questions
      *
-     * @ORM\OneToMany(targetEntity="Question", mappedBy="survey", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="Question", mappedBy="survey", cascade={"all"}, orphanRemoval=true)
      */
     private $questions;
 
@@ -88,5 +88,10 @@ class Survey
     {
         $question->setSurvey($this);
         $this->questions->add($question);
+    }
+
+    public function removeQuestion(Question $question)
+    {
+        $this->questions->removeElement($question);
     }
 }

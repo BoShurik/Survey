@@ -21,7 +21,7 @@ survey_new:
 
 survey_create:
     pattern:  /create
-    defaults: { _controller: "BoShurikSurveyBundle:Survey:create" }
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:new" }
     requirements: { _method: post }
 
 survey_edit:
@@ -30,7 +30,7 @@ survey_edit:
 
 survey_update:
     pattern:  /{id}/update
-    defaults: { _controller: "BoShurikSurveyBundle:Survey:update" }
+    defaults: { _controller: "BoShurikSurveyBundle:Survey:edit" }
     requirements: { _method: post }
 
 survey_delete:
