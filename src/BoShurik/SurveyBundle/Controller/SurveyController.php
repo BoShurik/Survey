@@ -85,6 +85,7 @@ class SurveyController extends Controller
             throw $this->createNotFoundException('Unable to find Survey entity.');
         }
 
+        // TODO: Move this code to form type
         $builder = $this->createFormBuilder();
 
         $choiceEntities = array();
@@ -108,6 +109,7 @@ class SurveyController extends Controller
             $answer = new Answer($user, $entity);
 
             $data = $form->getData();
+            // TODO: Move this code to model
             foreach ($entity->getQuestions() as $question) {
                 if (isset($data['question_' . $question->getId()])) {
                     if (is_array($data['question_' . $question->getId()]) && $question->getMultiple()) {
